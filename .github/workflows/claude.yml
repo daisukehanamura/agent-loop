@@ -77,6 +77,9 @@ jobs:
           # CLAUDE.md の規約に従わせ、検証まで必ず走らせる
           prompt: |
             このリポジトリの CLAUDE.md に書かれた設計・テスト規約に必ず従ってください。
+
+            **応答・コミットメッセージ・PR 本文・コード内コメントはすべて日本語で書いてください。**
+            英語にするのは識別子とブランチ名、Conventional Commits の type/scope だけです。
             コードを変更したら、コミット前に必ず以下を実行して緑にしてください。
               cd backend && ./gradlew spotlessApply checkAll
               cd frontend && npm run lint:fix && npm run checkAll
