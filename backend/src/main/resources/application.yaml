@@ -1,0 +1,74 @@
+spring:
+  application:
+    name: careerdeck
+
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:15432/careerdeck}
+    username: ${DB_USER:careerdeck}
+    password: ${DB_PASSWORD:careerdeck}
+    hikari:
+      maximum-pool-size: 10
+      connection-timeout: 3000
+
+  jpa:
+    open-in-view: false          # Lazy ロードをリクエストスコープで隠さない
+    hibernate:
+      ddl-auto: validate         # スキーマは Flyway が唯一の正
+    properties:
+      hibernate:
+        jdbc.time_zone: UTC
+        format_sql: false
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: false
+
+  threads:
+    virtual:
+      enabled: true              # Java 21 仮想スレッド
+
+  jackson:
+    default-property-inclusion: non_null
+
+  docker:
+    compose:
+      enabled: false             # 明示的に compose を起動する運用にする
+
+server:
+  port: ${PORT:8080}
+  shutdown: graceful
+  error:
+    include-message: never
+    include-stacktrace: never
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      probes:
+        enabled: true
+      show-details: when-authorized
+  health:
+    readiness-state:
+      enabled: true
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: alpha
+
+careerdeck:
+  ai:
+    enabled: ${CAREERDECK_AI_ENABLED:false}
+    model: claude-sonnet-5
+    max-output-tokens: 2048
+    max-refine-loops: 2
+
+logging:
+  level:
+    root: INFO
+    dev.hanamaru.careerdeck: DEBUG

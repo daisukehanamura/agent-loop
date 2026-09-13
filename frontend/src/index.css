@@ -1,0 +1,18 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ink-50: oklch(0.97 0.005 265);
+  --color-ink-400: oklch(0.64 0.02 265);
+  --color-ink-700: oklch(0.37 0.03 265);
+  --color-ink-900: oklch(0.21 0.03 265);
+  --color-accent-500: oklch(0.62 0.18 265);
+  --color-accent-600: oklch(0.55 0.19 265);
+}
+
+:root {
+  color-scheme: light dark;
+}
+
+body {
+  @apply bg-ink-50 text-ink-900 antialiased dark:bg-ink-900 dark:text-ink-50;
+}

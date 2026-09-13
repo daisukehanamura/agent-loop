@@ -1,0 +1,39 @@
+# --- OS / editor ---
+.DS_Store
+.idea/
+*.iml
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+
+# --- Gradle / JVM ---
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+out/
+*.log
+*.hprof
+
+# --- Node ---
+node_modules/
+dist/
+dist-ssr/
+coverage/
+.vite/
+*.local
+
+# --- Playwright ---
+playwright-report/
+test-results/
+blob-report/
+.playwright/
+
+# --- Secrets / env ---
+.env
+.env.*
+!.env.example
+*.pem
+secrets/
+
+# --- Claude Code (local only) ---
+.claude/settings.local.json

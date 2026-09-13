@@ -1,0 +1,29 @@
+# ローカル開発用のインフラ。アプリ本体はホストで動かす（ホットリロードを効かせるため）。
+name: careerdeck
+
+services:
+  postgres:
+    image: postgres:18.6-alpine
+    container_name: careerdeck-postgres
+    environment:
+      POSTGRES_DB: careerdeck
+      POSTGRES_USER: careerdeck
+      POSTGRES_PASSWORD: careerdeck
+      # 日本語を含むデータを扱うので照合順序を明示
+      POSTGRES_INITDB_ARGS: '--encoding=UTF-8 --locale=C'
+    ports:
+      # ホストに既存の Postgres がいる場合に衝突しないようずらす
+      - '15432:5432'
+    volumes:
+      # Postgres 18 以降は /var/lib/postgresql を丸ごとマウントする
+      # (バージョン別サブディレクトリに分かれるため data を直接指すと起動に失敗する)
+      - postgres-data:/var/lib/postgresql
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U careerdeck -d careerdeck']
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 10s
+
+volumes:
+  postgres-data:

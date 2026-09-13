@@ -1,0 +1,43 @@
+name: Claude PR レビュー
+
+# PR が開かれたら自動でレビューする。人間のレビュー前に機械的な指摘を潰しておく。
+on:
+  pull_request:
+    types: [opened, ready_for_review]
+
+permissions:
+  contents: read
+
+jobs:
+  review:
+    # Draft と Claude 自身が作った PR はレビューしない
+    if: github.event.pull_request.draft == false && github.actor != 'claude[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      pull-requests: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
+
+      - uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          prompt: |
+            この PR の差分をレビューしてください。CLAUDE.md の規約が判断基準です。
+
+            重点的に見るところ:
+            - バグ・null 安全性・トランザクション境界・N+1 クエリ
+            - レイヤ違反 (domain がフレームワークに依存していないか)
+            - テストが振る舞いを検証しているか (実装の写経になっていないか)
+            - Flyway マイグレーションが後方互換か
+            - 例外が握りつぶされていないか
+
+            指摘は「なぜ問題か」と「どう直すか」をセットで書いてください。
+            問題がなければ短く承認コメントだけ残し、無理に指摘を作らないでください。
+          claude_args: |
+            --allowed-tools Read,Glob,Grep,Bash(git diff:*),Bash(git log:*)
+          use_sticky_comment: true

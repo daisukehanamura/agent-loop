@@ -1,0 +1,50 @@
+version: 2
+updates:
+  - package-ecosystem: gradle
+    directory: /backend
+    schedule:
+      interval: weekly
+      day: monday
+      time: '09:00'
+      timezone: Asia/Tokyo
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: 'chore(deps)'
+    groups:
+      # 個別 PR が乱立しないようまとめる
+      spring:
+        patterns: ['org.springframework*', 'io.spring*']
+      kotlin:
+        patterns: ['org.jetbrains.kotlin*']
+      test:
+        patterns: ['*testcontainers*', 'io.mockk*', 'io.kotest*', 'com.tngtech.archunit*']
+
+  - package-ecosystem: npm
+    directory: /frontend
+    schedule:
+      interval: weekly
+      day: monday
+      time: '09:00'
+      timezone: Asia/Tokyo
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: 'chore(deps)'
+    groups:
+      react:
+        patterns: ['react', 'react-dom', '@types/react', '@types/react-dom']
+      tanstack:
+        patterns: ['@tanstack/*']
+      tooling:
+        patterns: ['vite', '@vitejs/*', 'vitest', '@vitest/*', '@biomejs/*', 'typescript']
+      testing:
+        patterns: ['@testing-library/*', '@playwright/*', 'jsdom']
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: '09:00'
+      timezone: Asia/Tokyo
+    commit-message:
+      prefix: 'ci(deps)'

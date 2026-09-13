@@ -1,0 +1,68 @@
+name: Claude
+
+# Issue や PR で @claude とメンションすると、Claude Code が実装・修正・調査を行う。
+# これが「CI 駆動ループ」の入口になる。
+on:
+  issue_comment:
+    types: [created]
+  pull_request_review_comment:
+    types: [created]
+  pull_request_review:
+    types: [submitted]
+  issues:
+    types: [opened, assigned, labeled]
+
+permissions:
+  contents: read
+
+jobs:
+  claude:
+    # 無関係なコメントで毎回起動しないよう、トリガー語があるときだけ動かす
+    if: |
+      (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude')) ||
+      (github.event_name == 'pull_request_review_comment' && contains(github.event.comment.body, '@claude')) ||
+      (github.event_name == 'pull_request_review' && contains(github.event.review.body, '@claude')) ||
+      (github.event_name == 'issues' && (contains(github.event.issue.body, '@claude') || github.event.label.name == 'claude'))
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+      id-token: write
+      actions: read
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-java@v6.0.1
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: gradle/actions/setup-gradle@v6.3.0
+        with:
+          cache-read-only: true
+      - uses: actions/setup-node@v7.0.0
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: フロントエンドの依存を先に入れておく
+        working-directory: frontend
+        run: npm ci
+
+      - uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          # CLAUDE.md の規約に従わせ、検証まで必ず走らせる
+          prompt: |
+            このリポジトリの CLAUDE.md に書かれた設計・テスト規約に必ず従ってください。
+            コードを変更したら、コミット前に必ず以下を実行して緑にしてください。
+              cd backend && ./gradlew spotlessApply checkAll
+              cd frontend && npm run lint:fix && npm run checkAll
+            失敗したら原因を直してから再実行します。通らないまま完了報告はしないでください。
+          claude_args: |
+            --allowed-tools Bash,Read,Write,Edit,Glob,Grep
+          use_sticky_comment: true
