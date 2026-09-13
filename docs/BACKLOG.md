@@ -37,8 +37,12 @@
 - [ ] 表示するリポジトリを選んで並び替えできる
 - [ ] レート制限に当たったらキャッシュを返す
 
-## 基盤の改善（優先度は低いが忘れないため）
+## 手が空いたときに
 
+- [ ] **PR #4 (Kotlin 2.4.20)**: `allWarningsAsErrors` により
+      `-Xannotation-default-target=param-property` が冗長警告→エラーになる。
+      `backend/build.gradle.kts` から当該フラグを外せば通る。
+      GitHub App 設定後の `@claude` 動作確認の題材として残してある。
 - [ ] 認証（GitHub OAuth）を入れる。現状は誰でも書き込める
 - [ ] detekt を導入する（2.0 stable が出たら）
 - [ ] 本番デプロイ先を決めてデプロイワークフローを作る
@@ -48,3 +52,5 @@
 ## 完了
 
 - [x] リポジトリ基盤・CI/CD・ローカル環境・AIループ基盤の構築（2026-09-13）
+- [x] CI の初期不具合修正（API キー未設定ガード / Dependabot の PR タイトル）（2026-09-13, #2）
+- [x] `@types/node` のメジャー更新を Dependabot から除外（2026-09-13, #3）
