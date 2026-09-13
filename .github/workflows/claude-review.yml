@@ -11,7 +11,11 @@ permissions:
 jobs:
   review:
     # Draft と Claude 自身が作った PR はレビューしない
-    if: github.event.pull_request.draft == false && github.actor != 'claude[bot]'
+    # Draft、Claude 自身の PR、bot (Dependabot) の PR はレビューしない
+    if: |
+      github.event.pull_request.draft == false &&
+      github.actor != 'claude[bot]' &&
+      github.event.pull_request.user.type != 'Bot'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     permissions:
@@ -19,11 +23,25 @@ jobs:
       pull-requests: write
       id-token: write
     steps:
-      - uses: actions/checkout@v7.0.1
+      - name: ANTHROPIC_API_KEY の有無を確認
+        id: guard
+        env:
+          KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          if [ -z "$KEY" ]; then
+            echo "::warning::ANTHROPIC_API_KEY が未設定のためスキップします。"
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - if: steps.guard.outputs.enabled == 'true'
+        uses: actions/checkout@v7.0.1
         with:
           fetch-depth: 0
 
-      - uses: anthropics/claude-code-action@v1
+      - if: steps.guard.outputs.enabled == 'true'
+        uses: anthropics/claude-code-action@v1
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           prompt: |
