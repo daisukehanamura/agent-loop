@@ -19,10 +19,28 @@
 
 これがないと `@claude` も自動 PR レビューも動かない（今はスキップされる）。
 
+キーは <https://console.anthropic.com/> で取得する。**対話的なターミナルで**実行すること。
+
 ```bash
 gh secret set ANTHROPIC_API_KEY
-# 貼り付けて Enter。https://console.anthropic.com/ で取得する
+# 貼り付けて Enter
 ```
+
+> **注意: 非対話環境だと空の値が黙って登録される**
+>
+> TTY のない環境（エディタ統合のシェル、スクリプト、CI など）で `gh secret set` を
+> 引数なしに実行すると、空の stdin を読んで**空文字を登録し、エラーも出さない**。
+> `gh secret list` には名前が出るので、一見すると成功したように見える。
+>
+> 非対話環境で設定するなら値を明示的に渡す。
+>
+> ```bash
+> gh secret set ANTHROPIC_API_KEY --body "$(pbpaste)"   # クリップボードから
+> gh secret set ANTHROPIC_API_KEY < ~/.anthropic-key    # ファイルから
+> ```
+>
+> 設定できたかは `gh secret list` では分からない。ワークフローを実際に動かし、
+> 「ANTHROPIC_API_KEY の有無を確認」ステップの後続がスキップされないことで確認する。
 
 ### 2. Claude Code GitHub App をインストールする
 
