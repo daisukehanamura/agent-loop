@@ -46,6 +46,7 @@ jobs:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           prompt: |
             この PR の差分をレビューしてください。CLAUDE.md の規約が判断基準です。
+            **レビューコメントは必ず日本語で書いてください。**
 
             重点的に見るところ:
             - バグ・null 安全性・トランザクション境界・N+1 クエリ
