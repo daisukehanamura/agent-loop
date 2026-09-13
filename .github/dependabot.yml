@@ -38,6 +38,12 @@ updates:
         patterns: ['vite', '@vitejs/*', 'vitest', '@vitest/*', '@biomejs/*', 'typescript']
       testing:
         patterns: ['@testing-library/*', '@playwright/*', 'jsdom']
+    ignore:
+      # @types/node は実行する Node のメジャーに合わせる必要がある。
+      # 勝手に上げられると、存在しない API の型が通ってしまう。
+      # Node 本体を上げるときに、このバージョンも手で上げること。
+      - dependency-name: '@types/node'
+        update-types: ['version-update:semver-major']
 
   - package-ecosystem: github-actions
     directory: /
