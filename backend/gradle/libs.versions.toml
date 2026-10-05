@@ -2,7 +2,7 @@
 kotlin = "2.3.21"
 springBoot = "4.1.1"
 springDependencyManagement = "1.1.7"
-spotless = "8.10.2"
+spotless = "8.10.3"
 ktlint = "1.8.0"
 kover = "0.9.9"
 archunit = "1.5.0"
