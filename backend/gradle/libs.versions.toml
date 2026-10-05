@@ -1,10 +1,10 @@
 [versions]
-kotlin = "2.3.21"
+kotlin = "2.4.20"
 springBoot = "4.1.1"
 springDependencyManagement = "1.1.7"
 spotless = "8.10.2"
 ktlint = "1.8.0"
-kover = "0.9.9"
+kover = "0.9.11"
 archunit = "1.5.0"
 mockk = "1.14.11"
 kotest = "6.2.5"
