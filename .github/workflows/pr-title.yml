@@ -16,7 +16,7 @@ jobs:
       # こちらで変えられないので検証しない。ジョブごとスキップすると必須チェックが
       # 報告されずマージできなくなるため、ステップ側で分岐する。
       - if: github.event.pull_request.user.type != 'Bot'
-        uses: amannn/action-semantic-pull-request@v6.1.1
+        uses: amannn/action-semantic-pull-request@v6.1.2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
